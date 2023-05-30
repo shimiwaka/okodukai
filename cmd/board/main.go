@@ -12,18 +12,19 @@ import (
 func main() {
 	rootPath := os.Getenv("SCRIPT_NAME")
 
-    r := chi.NewRouter()
+	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"*"}}))
 	
-    r.Get(rootPath + "/", pingHandler)
+	r.Get(rootPath + "/", pingHandler)
 	r.Post(rootPath + "/create", createHandler)
 	r.Post(rootPath + "/forget", forgetHandler)
 
 	r.Route("/board", func(r chi.Router) {
 		r.Get("/{boardToken}", boardHandler)
+		r.Post("/{boardToken}/newcolumn", addColumnHandler)
 	  })
 
-    http.ListenAndServe(":9999", r)
+	http.ListenAndServe(":9999", r)
 	// cgi.Serve(r)
 }
