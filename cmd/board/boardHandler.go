@@ -4,12 +4,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 	"net/http"
 
 	"github.com/shimiwaka/okodukai/schema"
 	"github.com/shimiwaka/okodukai/connector"
 	"github.com/go-chi/chi"
 )
+
+func TrancateByDate(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+}
 
 func boardHandler(w http.ResponseWriter, r *http.Request) {
 	db := connector.ConnectDB()
@@ -24,10 +29,24 @@ func boardHandler(w http.ResponseWriter, r *http.Request) {
 		columns := []schema.Column{}
 		db.Where("board = ?", board.Token).Find(&columns)
 
+		createdAt := TrancateByDate(board.CreatedAt.AddDate(0, 0, -5))
+		now := TrancateByDate(time.Now()).AddDate(0, 0, 1)
+
+		checked := []bool{}
+		for j := 0; j < len(columns); j++ {
+			checked = append(checked, false)
+		}
+
+		days := []schema.Day{}
+		for i := createdAt; i.Before(now); i = i.AddDate(0, 0, 1) {
+			days = append(days, schema.Day{Date: i, Checked: checked})
+		}
+
 		resp := schema.Response{
 			Owner: board.Owner,
 			Token: board.Token,
 			Columns: columns,
+			Days: days,
 		}
 		var buf bytes.Buffer
 		enc := json.NewEncoder(&buf)
