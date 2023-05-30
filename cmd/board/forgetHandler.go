@@ -52,7 +52,7 @@ func forgetHandler(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         panic("error : failed to send mail.")
     }
-	fmt.Fprintln(w, "{\"success\": \"true\"}")
+	fmt.Fprintln(w, "{\"success\": true}")
 
 	db.Close()
 }
