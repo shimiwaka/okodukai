@@ -82,20 +82,22 @@ func addColumnHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkHandler(w http.ResponseWriter, r *http.Request) {
-	e := r.ParseForm()
-	if e != nil {
-		panic("error: parse error occured.")
-	}
-
-	name := r.Form.Get("name")
-
 	db := connector.ConnectDB()
 
 	board := schema.Board{}
 	db.First(&board, "token = ?", chi.URLParam(r, "boardToken"))
 
-	column := schema.Column{Board: board.Token, Name: name}
+	columns := []schema.Column{}
+	db.Where("board = ?", chi.URLParam(r, "boardToken")).Find(&columns)
 
-	db.Create(&column)
+	columnIdx, _ := strconv.Atoi(chi.URLParam(r, "column"))
+	column := columns[columnIdx]
+
+	fmt.Println(chi.URLParam(r, "date"))
+	t, _ := time.Parse("2006-01-02", fmt.Sprintf("%s", chi.URLParam(r, "date")))
+	fmt.Println(t)
+	check := schema.Checked{Date: t, Column: column.ID}
+
+	db.Create(&check)
 	db.Close()
 }

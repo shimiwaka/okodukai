@@ -23,7 +23,7 @@ func main() {
 	r.Route("/board", func(r chi.Router) {
 		r.Get("/{boardToken}", boardHandler)
 		r.Post("/{boardToken}/newcolumn", addColumnHandler)
-		r.Post("/{boardToken}/check/{date}/{column}", checkHandler)
+		r.Get("/{boardToken}/check/{date}/{column}", checkHandler)
 	  })
 
 	http.ListenAndServe(":9999", r)
