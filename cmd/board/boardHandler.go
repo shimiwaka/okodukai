@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 	"net/http"
+	"strconv"
 
 	"github.com/shimiwaka/okodukai/schema"
 	"github.com/shimiwaka/okodukai/connector"
@@ -61,6 +62,26 @@ func boardHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addColumnHandler(w http.ResponseWriter, r *http.Request) {
+	e := r.ParseForm()
+	if e != nil {
+		panic("error: parse error occured.")
+	}
+
+	name := r.Form.Get("name")
+	price, _ := strconv.Atoi(r.Form.Get("price"))
+
+	db := connector.ConnectDB()
+
+	board := schema.Board{}
+	db.First(&board, "token = ?", chi.URLParam(r, "boardToken"))
+
+	column := schema.Column{Board: board.Token, Name: name, Price: price}
+
+	db.Create(&column)
+	db.Close()
+}
+
+func checkHandler(w http.ResponseWriter, r *http.Request) {
 	e := r.ParseForm()
 	if e != nil {
 		panic("error: parse error occured.")

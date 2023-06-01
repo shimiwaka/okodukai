@@ -16,6 +16,7 @@ type Column struct {
 	gorm.Model `json:"-"`
 	Board		string		`json:"board"`
 	Name		string		`json:"name"`
+	Price		int			`json:"price"`
 }
 
 type Day struct {

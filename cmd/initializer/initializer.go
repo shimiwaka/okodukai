@@ -38,7 +38,7 @@ func main() {
 	db.Exec("DROP TABLE boards")
 	db.AutoMigrate(&schema.Board{})
 
-	// db.Exec("DROP TABLE columns")
+	db.Exec("DROP TABLE columns")
 	db.AutoMigrate(&schema.Column{})
 
 	fmt.Println("Successfully initialized.")
