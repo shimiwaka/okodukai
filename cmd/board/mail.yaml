@@ -1,3 +1,1 @@
-mail_host: nemucure.sakura.ne.jp
-mail_address: mtrchan@nemucure.sakura.ne.jp
-mail_password: bays6cure
+../../config/mail.yaml
