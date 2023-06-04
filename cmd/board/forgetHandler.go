@@ -16,6 +16,7 @@ type MailSettings struct {
 	Hostname string `yaml:"mail_host"`
 	MailAddress string `yaml:"mail_address"`
 	MailPassword string `yaml:"mail_password"`
+	ServiceHost string `yaml:"service_host"`
 }
 
 func forgetHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +45,7 @@ func forgetHandler(w http.ResponseWriter, r *http.Request) {
     body := "あなたのメールアドレスが割り当てられたお小遣い帳は以下にあります：\n\n"
 
 	for i := 0; i < len(boards); i++ {
-		body += boards[i].Token + "\n"
+		body += mailSettings.ServiceHost + "/board/" + boards[i].Token + "\n"
 	}
 
     auth := smtp.CRAMMD5Auth(mailSettings.MailAddress, mailSettings.MailPassword)
