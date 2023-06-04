@@ -40,3 +40,34 @@ func addColumnHandler(w http.ResponseWriter, r *http.Request) {
 
 	db.Create(&column)
 }
+
+func deleteColumnHandler(w http.ResponseWriter, r *http.Request) {
+	e := r.ParseForm()
+	if e != nil {
+		fmt.Fprintf(w, "{\"success\":false, \"message\":\"parse error occured\"}")
+		return
+	}
+	db := connector.ConnectDB()
+	defer db.Close()
+
+	board := schema.Board{}
+	db.First(&board, "token = ?", chi.URLParam(r, "boardToken"))
+
+	if board.Owner == "" {
+		fmt.Fprintln(w, "{\"success\": false, \"message\": \"invalid token\"}")
+		return
+	}
+
+	columns := []schema.Column{}
+	db.Where("board = ?", board.ID).Find(&columns)
+
+	columnIdx, _ := strconv.Atoi(chi.URLParam(r, "idx"))
+	if columnIdx > len(columns) || columnIdx < 0 {
+		fmt.Fprintln(w, "{\"success\": false, \"message\": \"invalid column number\"}")
+		return
+	}
+	column := columns[columnIdx]
+
+	db.Where("`column` = ?", column.ID).Delete(&[]schema.Check{})
+	db.Delete(&column)
+}

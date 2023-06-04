@@ -23,6 +23,7 @@ func main() {
 	r.Route("/board", func(r chi.Router) {
 		r.Get("/{boardToken}", showBoardHandler)
 		r.Post("/{boardToken}/newcolumn", addColumnHandler)
+		r.Get("/{boardToken}/deletecolumn/{idx}", deleteColumnHandler)
 		r.Get("/{boardToken}/check/{date}/{column}", checkHandler)
 		r.Get("/{boardToken}/uncheck/{date}/{column}", uncheckHandler)
 		r.Get("/{boardToken}/newpayment/{date}", newPaymentHandler)
