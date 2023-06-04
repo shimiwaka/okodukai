@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
-	// "net/http/cgi"
+	// "net/http"
+	"net/http/cgi"
 	"os"
 
 	"github.com/go-chi/chi"
@@ -14,13 +14,13 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"*"}}))
+		AllowedOrigins:   []string{"https://pb.peraimaru.work"}}))
 	
 	r.Get(rootPath + "/", pingHandler)
 	r.Post(rootPath + "/create", createHandler)
 	r.Post(rootPath + "/forget", forgetHandler)
 
-	r.Route("/board", func(r chi.Router) {
+	r.Route(rootPath + "/board", func(r chi.Router) {
 		r.Get("/{boardToken}", showBoardHandler)
 		r.Post("/{boardToken}/newcolumn", addColumnHandler)
 		r.Get("/{boardToken}/deletecolumn/{idx}", deleteColumnHandler)
@@ -30,6 +30,6 @@ func main() {
 		r.Get("/{boardToken}/cancelpayment/{date}", cancelPaymentHandler)
 	  })
 
-	http.ListenAndServe(":9999", r)
-	// cgi.Serve(r)
+	// http.ListenAndServe(":9999", r)
+	cgi.Serve(r)
 }

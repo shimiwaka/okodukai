@@ -35,13 +35,13 @@ func main() {
 		return
 	}
 
-	db.Exec("DROP TABLE boards")
+	// db.Exec("DROP TABLE boards")
 	db.AutoMigrate(&schema.Board{})
 
-	db.Exec("DROP TABLE columns")
+	// db.Exec("DROP TABLE columns")
 	db.AutoMigrate(&schema.Column{})
 
-	db.Exec("DROP TABLE checks")
+	// db.Exec("DROP TABLE checks")
 	db.AutoMigrate(&schema.Check{})
 
 	// db.Exec("DROP TABLE payments")
