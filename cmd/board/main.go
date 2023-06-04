@@ -25,6 +25,8 @@ func main() {
 		r.Post("/{boardToken}/newcolumn", addColumnHandler)
 		r.Get("/{boardToken}/check/{date}/{column}", checkHandler)
 		r.Get("/{boardToken}/uncheck/{date}/{column}", uncheckHandler)
+		r.Get("/{boardToken}/newpayment/{date}", newPaymentHandler)
+		r.Get("/{boardToken}/cancelpayment/{date}", cancelPaymentHandler)
 	  })
 
 	http.ListenAndServe(":9999", r)

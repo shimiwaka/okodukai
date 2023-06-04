@@ -23,6 +23,7 @@ type Day struct {
 	gorm.Model `json:"-"`
 	Date		time.Time	`json:"date"`
 	Checked		[]bool		`json:"checked"`
+	Payment		int			`json:"payment"`
 }
 
 type Check struct {

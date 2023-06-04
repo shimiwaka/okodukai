@@ -43,17 +43,32 @@ func showBoardHandler(w http.ResponseWriter, r *http.Request) {
 	for _, v := range(checks) {
 		checkedMap[fmt.Sprintf("%s_%d", v.Date, v.Column)] = true
 	}
+	
+	payments := []schema.Payment{}
+	db.Where("board = ?", board.ID).Find(&payments)
+	paymentsMap := make(map[string]bool)
 
-	for i := now; i.After(createdAt); i = i.AddDate(0, 0, -1) {
+	for _, v := range(payments) {
+		paymentsMap[fmt.Sprintf("%s", v.Date)] = true
+	}
+
+	paymentBuf := 0
+	for i := createdAt; i.Before(now); i = i.AddDate(0, 0, 1) {
+		payment := -1
 		checkedList := []bool{}
 		for _, column := range(columns){
 			if checkedMap[fmt.Sprintf("%s_%d", i, column.ID)] {
 				checkedList = append(checkedList, true)
+				paymentBuf += column.Price
 			} else {
 				checkedList = append(checkedList, false)
 			}
 		}
-		days = append(days, schema.Day{Date: i, Checked: checkedList})
+		if paymentsMap[fmt.Sprintf("%s", i)] {
+			payment = paymentBuf
+			paymentBuf = 0
+		}
+		days = append(days, schema.Day{Date: i, Checked: checkedList, Payment: payment})
 	}
 
 	resp := schema.Response{
