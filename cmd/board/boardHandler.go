@@ -111,3 +111,23 @@ func checkHandler(w http.ResponseWriter, r *http.Request) {
 	db.Create(&check)
 	db.Close()
 }
+
+
+func uncheckHandler(w http.ResponseWriter, r *http.Request) {
+	db := connector.ConnectDB()
+
+	board := schema.Board{}
+	db.First(&board, "token = ?", chi.URLParam(r, "boardToken"))
+
+	columns := []schema.Column{}
+	db.Where("board = ?", board.ID).Find(&columns)
+
+	columnIdx, _ := strconv.Atoi(chi.URLParam(r, "column"))
+	column := columns[columnIdx]
+
+	t, _ := time.Parse("2006-01-02", fmt.Sprintf("%s", chi.URLParam(r, "date")))
+	t = t.Add(time.Hour * -9)
+
+	db.Where("board = ? AND `column` = ? AND date = ?", board.ID, column.ID, t).Delete(&schema.Check{})
+	db.Close()
+}
