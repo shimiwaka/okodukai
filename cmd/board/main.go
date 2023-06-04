@@ -21,7 +21,7 @@ func main() {
 	r.Post(rootPath + "/forget", forgetHandler)
 
 	r.Route("/board", func(r chi.Router) {
-		r.Get("/{boardToken}", boardHandler)
+		r.Get("/{boardToken}", showBoardHandler)
 		r.Post("/{boardToken}/newcolumn", addColumnHandler)
 		r.Get("/{boardToken}/check/{date}/{column}", checkHandler)
 		r.Get("/{boardToken}/uncheck/{date}/{column}", uncheckHandler)

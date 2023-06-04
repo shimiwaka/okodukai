@@ -23,7 +23,8 @@ func forgetHandler(w http.ResponseWriter, r *http.Request) {
 
 	e := r.ParseForm()
 	if e != nil {
-		panic("error: parse error occured.")
+		fmt.Fprintf(w, "{\"success\":false, \"message\":\"parse error occured\"}")
+		return
 	}
 
 	email := r.Form.Get("email")
@@ -38,8 +39,8 @@ func forgetHandler(w http.ResponseWriter, r *http.Request) {
 
     from := mailSettings.MailAddress
     recipients := []string{email}
-    subject := "okodukai information"
-    body := "The board assigned to your email address is below.\n\n"
+    subject := "お小遣い帳"
+    body := "あなたのメールアドレスが割り当てられたお小遣い帳は以下にあります：\n\n"
 
 	for i := 0; i < len(boards); i++ {
 		body += boards[i].Token + "\n"
@@ -50,8 +51,9 @@ func forgetHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := smtp.SendMail(fmt.Sprintf("%s:%d", mailSettings.Hostname, 587), auth, from, recipients, msg);
     if err != nil {
-        panic("error : failed to send mail.")
-    }
+		fmt.Fprintf(w, "{\"success\":false, \"message\":\"faild to send mail\"}")
+		return
+	}
 	fmt.Fprintln(w, "{\"success\": true}")
 
 	db.Close()
