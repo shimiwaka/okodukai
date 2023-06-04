@@ -39,3 +39,9 @@ type Response struct {
 	Columns		[]Column	`json:"columns"`
 	Days		[]Day		`json:"days"`
 }
+
+type Payment struct {
+	gorm.Model `json:"-"`
+	Board		uint 		`json:"board"`
+	Date		time.Time	`json:"date"`
+}

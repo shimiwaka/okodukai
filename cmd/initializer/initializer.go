@@ -41,8 +41,11 @@ func main() {
 	db.Exec("DROP TABLE columns")
 	db.AutoMigrate(&schema.Column{})
 
-	db.Exec("DROP TABLE checkeds")
+	db.Exec("DROP TABLE checks")
 	db.AutoMigrate(&schema.Check{})
+
+	// db.Exec("DROP TABLE payments")
+	db.AutoMigrate(&schema.Payment{})
 
 	fmt.Println("Successfully initialized.")
 }
