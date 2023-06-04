@@ -27,6 +27,7 @@ func newPaymentHandler(w http.ResponseWriter, r *http.Request) {
 	payment := schema.Payment{Date: t, Board: board.ID}
 
 	db.Create(&payment)
+	fmt.Fprintln(w, "{\"success\": true}")
 }
 
 func cancelPaymentHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,4 +46,5 @@ func cancelPaymentHandler(w http.ResponseWriter, r *http.Request) {
 	t = t.Add(time.Hour * -9)
 
 	db.Where("board = ? AND date = ?", board.ID, t).Delete(&schema.Payment{})
+	fmt.Fprintln(w, "{\"success\": true}")
 }

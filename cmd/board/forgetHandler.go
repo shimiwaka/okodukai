@@ -20,6 +20,7 @@ type MailSettings struct {
 
 func forgetHandler(w http.ResponseWriter, r *http.Request) {
 	db := connector.ConnectDB()
+	defer db.Close()
 
 	e := r.ParseForm()
 	if e != nil {
@@ -55,6 +56,4 @@ func forgetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintln(w, "{\"success\": true}")
-
-	db.Close()
 }

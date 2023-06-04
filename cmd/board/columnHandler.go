@@ -39,6 +39,7 @@ func addColumnHandler(w http.ResponseWriter, r *http.Request) {
 	column := schema.Column{Board: board.ID, Name: name, Price: price}
 
 	db.Create(&column)
+	fmt.Fprintln(w, "{\"success\": true}")
 }
 
 func deleteColumnHandler(w http.ResponseWriter, r *http.Request) {
@@ -70,4 +71,6 @@ func deleteColumnHandler(w http.ResponseWriter, r *http.Request) {
 
 	db.Where("`column` = ?", column.ID).Delete(&[]schema.Check{})
 	db.Delete(&column)
+	
+	fmt.Fprintln(w, "{\"success\": true}")
 }

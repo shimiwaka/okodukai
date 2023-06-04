@@ -39,6 +39,7 @@ func checkHandler(w http.ResponseWriter, r *http.Request) {
 	check := schema.Check{Date: t, Column: column.ID, Board: board.ID}
 
 	db.Create(&check)
+	fmt.Fprintln(w, "{\"success\": true}")
 }
 
 
@@ -68,4 +69,5 @@ func uncheckHandler(w http.ResponseWriter, r *http.Request) {
 	t = t.Add(time.Hour * -9)
 
 	db.Where("board = ? AND `column` = ? AND date = ?", board.ID, column.ID, t).Delete(&schema.Check{})
+	fmt.Fprintln(w, "{\"success\": true}")
 }
