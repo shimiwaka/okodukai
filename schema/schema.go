@@ -14,7 +14,7 @@ type Board struct {
 
 type Column struct {
 	gorm.Model `json:"-"`
-	Board		string		`json:"board"`
+	Board		uint		`json:"board"`
 	Name		string		`json:"name"`
 	Price		int			`json:"price"`
 }

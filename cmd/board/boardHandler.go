@@ -23,12 +23,11 @@ func boardHandler(w http.ResponseWriter, r *http.Request) {
 	board := schema.Board{}
 	db.First(&board, "token = ?", chi.URLParam(r, "boardToken"))
 
-
 	if board.Owner == "" {
 		fmt.Fprintln(w, "{\"error\": \"invalid token\"}")
 	} else {
 		columns := []schema.Column{}
-		db.Where("board = ?", board.Token).Find(&columns)
+		db.Where("board = ?", board.ID).Find(&columns)
 
 		createdAt := TrancateByDate(board.CreatedAt.AddDate(0, 0, -5))
 		now := TrancateByDate(time.Now()).AddDate(0, 0, 1)
@@ -75,7 +74,7 @@ func addColumnHandler(w http.ResponseWriter, r *http.Request) {
 	board := schema.Board{}
 	db.First(&board, "token = ?", chi.URLParam(r, "boardToken"))
 
-	column := schema.Column{Board: board.Token, Name: name, Price: price}
+	column := schema.Column{Board: board.ID, Name: name, Price: price}
 
 	db.Create(&column)
 	db.Close()
@@ -88,14 +87,12 @@ func checkHandler(w http.ResponseWriter, r *http.Request) {
 	db.First(&board, "token = ?", chi.URLParam(r, "boardToken"))
 
 	columns := []schema.Column{}
-	db.Where("board = ?", chi.URLParam(r, "boardToken")).Find(&columns)
+	db.Where("board = ?", board.ID).Find(&columns)
 
 	columnIdx, _ := strconv.Atoi(chi.URLParam(r, "column"))
 	column := columns[columnIdx]
 
-	fmt.Println(chi.URLParam(r, "date"))
 	t, _ := time.Parse("2006-01-02", fmt.Sprintf("%s", chi.URLParam(r, "date")))
-	fmt.Println(t)
 	check := schema.Checked{Date: t, Column: column.ID}
 
 	db.Create(&check)
