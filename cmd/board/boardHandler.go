@@ -32,14 +32,14 @@ func boardHandler(w http.ResponseWriter, r *http.Request) {
 		createdAt := TrancateByDate(board.CreatedAt.AddDate(0, 0, -5))
 		now := TrancateByDate(time.Now()).AddDate(0, 0, 1)
 
-		checked := []bool{}
-		for j := 0; j < len(columns); j++ {
-			checked = append(checked, false)
-		}
-
 		days := []schema.Day{}
+
 		for i := createdAt; i.Before(now); i = i.AddDate(0, 0, 1) {
-			days = append(days, schema.Day{Date: i, Checked: checked})
+			checkedList := []bool{}
+			for j := 0; j < len(columns); j++ {
+				checkedList = append(checkedList, true)					
+			}
+			days = append(days, schema.Day{Date: i, Checked: checkedList})
 		}
 
 		resp := schema.Response{
@@ -93,7 +93,7 @@ func checkHandler(w http.ResponseWriter, r *http.Request) {
 	column := columns[columnIdx]
 
 	t, _ := time.Parse("2006-01-02", fmt.Sprintf("%s", chi.URLParam(r, "date")))
-	check := schema.Checked{Date: t, Column: column.ID}
+	check := schema.Check{Date: t, Column: column.ID, Board: board.ID}
 
 	db.Create(&check)
 	db.Close()

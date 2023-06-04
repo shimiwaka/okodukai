@@ -25,10 +25,11 @@ type Day struct {
 	Checked		[]bool		`json:"checked"`
 }
 
-type Checked struct {
+type Check struct {
 	gorm.Model `json:"-"`
 	Date		time.Time	`json:"date"`
 	Column		uint		`json:"column"`
+	Board		uint 		`json:"board"`
 }
 
 type Response struct {
