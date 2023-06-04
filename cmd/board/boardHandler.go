@@ -34,10 +34,22 @@ func boardHandler(w http.ResponseWriter, r *http.Request) {
 
 		days := []schema.Day{}
 
+		checks := []schema.Check{}
+		db.Where("board = ?", board.ID).Find(&checks)
+		checkedMap := make(map[string]bool)
+
+		for _, v := range(checks) {
+			checkedMap[fmt.Sprintf("%s_%d", v.Date, v.Column)] = true
+		}
+
 		for i := createdAt; i.Before(now); i = i.AddDate(0, 0, 1) {
 			checkedList := []bool{}
 			for j := 0; j < len(columns); j++ {
-				checkedList = append(checkedList, true)					
+				if checkedMap[fmt.Sprintf("%s_%d", i, columns[j].ID)] {
+					checkedList = append(checkedList, true)
+				} else {
+					checkedList = append(checkedList, false)
+				}
 			}
 			days = append(days, schema.Day{Date: i, Checked: checkedList})
 		}
@@ -93,6 +105,7 @@ func checkHandler(w http.ResponseWriter, r *http.Request) {
 	column := columns[columnIdx]
 
 	t, _ := time.Parse("2006-01-02", fmt.Sprintf("%s", chi.URLParam(r, "date")))
+	t = t.Add(time.Hour * -9)
 	check := schema.Check{Date: t, Column: column.ID, Board: board.ID}
 
 	db.Create(&check)
